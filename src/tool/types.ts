@@ -1,39 +1,34 @@
-export type DigitCase = 'lower' | 'upper';
+export type WordsFormat = 'lower' | 'title' |
+  /* comma-separated scale groups */ 'commas';
 
-export type BitGrouping = 'none' | 'nibble' | 'byte';
+export type Direction = 'number-to-words' | 'words-to-number';
 
 export interface ToolState {
-  /** The number as typed by the user, interpreted in `inputBase`. */
+  /** Text typed in the active direction's input. */
   input: string;
-  /** Base used to interpret `input` (2-36). */
-  inputBase: number;
-  /** Which case to use for digit letters in outputs. */
-  digitCase: DigitCase;
-  /** Grouping applied to binary output. */
-  grouping: BitGrouping;
-  /** Whether to show the signed two's complement representation. */
-  showTwosComplement: boolean;
-  /** Assumed bit length used for two's complement (multiple of 4). */
-  bitLength: number;
+  /** Active conversion direction. */
+  direction: Direction;
+  /** Word formatting style for number-to-words output. */
+  format: WordsFormat;
+  /** Currency (check writing) mode for number-to-words. */
+  currencyMode: boolean;
+  /** Ordinal output mode for number-to-words (integer part only). */
+  ordinalMode: boolean;
 }
 
-export const MIN_BASE = 2;
-export const MAX_BASE = 36;
-
 export const DEFAULT_STATE: ToolState = {
-  input: '255',
-  inputBase: 10,
-  digitCase: 'lower',
-  grouping: 'nibble',
-  showTwosComplement: true,
-  bitLength: 32,
+  input: '12345',
+  direction: 'number-to-words',
+  format: 'lower',
+  currencyMode: false,
+  ordinalMode: false,
 };
 
-export interface BaseConversion {
-  /** Canonical lowercase conversion (no grouping separators). */
-  value: string;
-  /** Formatted value: case applied plus bit grouping for binary. */
-  formatted: string;
-  /** True when an error is reported for this base row. */
+export const MAX_SAFE_WORDS_INTEGER = 999_999_999_999_999;
+
+/** Result of converting the current input in the active direction. */
+export interface ConversionResult {
+  primary: string;
+  secondary: string | null;
   error: string | null;
 }

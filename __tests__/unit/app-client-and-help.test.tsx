@@ -67,7 +67,7 @@ vi.mock('@/tool', () => ({
 }));
 
 vi.mock('@/tool/tool-definition', () => ({
-  baseConverterTool: {
+  wordNumberTool: {
     serialize: (state: unknown) => JSON.stringify(state),
     deserialize: () => ({ success: true, data: { input: 'From Shared Url', inputBase: 10 } }),
   },

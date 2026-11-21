@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { ToolState } from '../types';
+import type { Direction, ToolState } from '../types';
 
 interface ToolbarProps {
   state: ToolState;
@@ -9,25 +9,31 @@ interface ToolbarProps {
   onClear: () => void;
 }
 
-const QUICK_BASES: { base: number; label: string }[] = [
-  { base: 2, label: 'BIN' },
-  { base: 8, label: 'OCT' },
-  { base: 10, label: 'DEC' },
-  { base: 16, label: 'HEX' },
+const DIRECTION_LABELS: { value: Direction; label: string }[] = [
+  { value: 'number-to-words', label: 'Number → Words' },
+  { value: 'words-to-number', label: 'Words → Number' },
 ];
 
 export const Toolbar: React.FC<ToolbarProps> = ({ state, onChange, onClear }) => {
+  const swap = React.useCallback(() => {
+    onChange({
+      ...state,
+      direction: state.direction === 'number-to-words' ? 'words-to-number' : 'number-to-words',
+    });
+  }, [state, onChange]);
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
-      <div className="flex items-center gap-1" role="group" aria-label="Quick input base">
-        {QUICK_BASES.map(({ base, label }) => (
+      <div className="flex items-center gap-1" role="group" aria-label="Conversion direction">
+        {DIRECTION_LABELS.map(({ value, label }) => (
           <button
-            key={base}
+            key={value}
             type="button"
-            onClick={() => onChange({ ...state, inputBase: base })}
-            aria-pressed={state.inputBase === base}
+            onClick={() => onChange({ ...state, direction: value })}
+            aria-pressed={state.direction === value}
+            data-testid={`direction-${value}`}
             className={`rounded-md px-3 py-1.5 text-xs font-medium ${
-              state.inputBase === base
+              state.direction === value
                 ? 'bg-emerald-600 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             }`}
@@ -35,12 +41,41 @@ export const Toolbar: React.FC<ToolbarProps> = ({ state, onChange, onClear }) =>
             {label}
           </button>
         ))}
+        <button
+          type="button"
+          onClick={swap}
+          data-testid="swap-direction"
+          aria-label="Swap conversion direction"
+          className="rounded-md px-2 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+        >
+          ⇄ Swap
+        </button>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
+        <label className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
+          <input
+            type="checkbox"
+            checked={state.currencyMode}
+            onChange={(e) => onChange({ ...state, currencyMode: e.target.checked })}
+            data-testid="currency-mode"
+            className="h-3.5 w-3.5"
+          />
+          Currency ($ check style)
+        </label>
+        <label className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
+          <input
+            type="checkbox"
+            checked={state.ordinalMode}
+            onChange={(e) => onChange({ ...state, ordinalMode: e.target.checked })}
+            data-testid="ordinal-mode"
+            className="h-3.5 w-3.5"
+          />
+          Ordinal
+        </label>
         <button
           type="button"
           onClick={onClear}
-          className="rounded-md bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          className="rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
         >
           Clear
         </button>

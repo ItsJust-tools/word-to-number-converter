@@ -1,17 +1,12 @@
-import type { ToolConfig, ToolTheme } from '@itsjust/core';
+import type { ToolConfig } from '@itsjust/core';
 
-const toolTheme: ToolTheme = {
-  brand: 'Base Converter',
-  accent: '#10b981',
-};
-
-export const toolConfig: ToolConfig = {
-  id: '1795194271',
-  name: 'Base Converter',
-  description:
-    'Convert numbers between binary, octal, decimal, hexadecimal and arbitrary bases 2-36 with live input and bit grouping.',
+const toolConfig: ToolConfig = {
+  id: 'tool-1795241052',
+  name: 'Word to Number Converter',
   version: '1.0.0',
-  exportFormats: ['png', 'jpeg', 'webp', 'pdf'],
+  description:
+    'Convert numbers to English words (check writing style) and English word numbers back to numeric values.',
+  exportFormats: ['png', 'pdf', 'json', 'jpeg', 'webp'] as ToolConfig['exportFormats'],
   features: {
     export: true,
     autoSave: true,
@@ -20,7 +15,8 @@ export const toolConfig: ToolConfig = {
     statusBar: true,
     darkMode: true,
   },
-  theme: toolTheme,
 };
 
 export default toolConfig;
+
+export type ToolConfigType = typeof toolConfig;

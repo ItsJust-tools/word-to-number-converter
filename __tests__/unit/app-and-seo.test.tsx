@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { generateJsonLd, generateToolMetadata } from '@/lib/seo';
 import toolConfig from '@/tool/tool.config';
 import { getPublicSiteUrl, templateMetadata } from '@/tool/template-metadata';
-import { baseConverterTool } from '@/tool/tool-definition';
+import { wordNumberTool } from '@/tool/tool-definition';
 import { ToolCanvas } from '@/tool/components/tool-canvas';
 import { ToolSidebar } from '@/tool/components/tool-sidebar';
 import { ToolToolbar } from '@/tool/components/tool-toolbar';
@@ -93,27 +93,34 @@ describe('app and seo', () => {
   it('covers tool definition and helper exports', async () => {
     expect(cn('a', undefined, 'b', false, null, 'c')).toBe('a b c');
     expect(getPublicSiteUrl()).toBe('http://localhost:3000');
-    expect(baseConverterTool.deserialize({ input: 'ff', inputBase: 16 })).toEqual({
+    expect(wordNumberTool.deserialize({ input: 'hello', direction: 'words-to-number' })).toEqual({
       success: true,
       data: {
-        input: 'ff',
-        inputBase: 16,
-        digitCase: 'lower',
-        grouping: 'none',
-        showTwosComplement: true,
-        bitLength: DEFAULT_STATE.bitLength,
+        input: 'hello',
+        direction: 'words-to-number',
+        format: 'lower',
+        currencyMode: false,
+        ordinalMode: false,
       },
     });
-    expect(baseConverterTool.deserialize({ nope: true })).toEqual({
+    expect(wordNumberTool.deserialize({ nope: true })).toEqual({
       success: false,
-      error: 'Invalid data format: expected { input: string, inputBase: number (2-36), ... }',
+      error: 'Invalid data format: expected { input: string, direction: Direction, ... }',
     });
-    expect(baseConverterTool.serialize({ ...DEFAULT_STATE, input: '11' })).toContain('"input":"11"');
-    expect(baseConverterTool.deserialize({ input: '11', inputBase: 10, digitCase: 'upper', grouping: 'byte', bitLength: 8 })).toEqual({
+    expect(wordNumberTool.serialize({ ...DEFAULT_STATE, input: '11' })).toContain('"input":"11"');
+    expect(
+      wordNumberTool.deserialize({
+        input: '11',
+        direction: 'number-to-words',
+        format: 'title',
+        currencyMode: true,
+        ordinalMode: true,
+      })
+    ).toEqual({
       success: true,
-      data: { input: '11', inputBase: 10, digitCase: 'upper', grouping: 'byte', showTwosComplement: true, bitLength: 8 },
+      data: { input: '11', direction: 'number-to-words', format: 'title', currencyMode: true, ordinalMode: true },
     });
-    const exporters = (baseConverterTool as { exporters?: Array<{ loader: ExporterLoader }> }).exporters ?? [];
+    const exporters = (wordNumberTool as { exporters?: Array<{ loader: ExporterLoader }> }).exporters ?? [];
     expect(exporters).toHaveLength(4);
     const first = exporters[0];
     expect(first).toBeDefined();
@@ -134,7 +141,7 @@ describe('app and seo', () => {
 
     expect(screen.getByRole('link', { name: 'Open help page' })).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument(); // digit count for "ff"
-    expect(screen.getByRole('application', { name: 'Base converter canvas' })).toBeInTheDocument();
-    expect(screen.getByTestId('base-row-16')).toHaveTextContent('ff');
+    expect(screen.getByRole('application', { name: 'Word to number converter canvas' })).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-result')).toHaveTextContent('two hundred fifty-five');
   });
 });

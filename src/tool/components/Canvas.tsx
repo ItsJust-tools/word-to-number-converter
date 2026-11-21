@@ -1,12 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  convertToAllBases,
-  parseIntegerInBase,
-  twosComplementInfo,
-  requiredBitLength,
-} from '../tool-definition';
+import { convert } from '../tool-definition';
 import type { ToolState } from '../types';
 
 interface CanvasProps {
@@ -14,14 +9,7 @@ interface CanvasProps {
   onChange: (state: ToolState) => void;
 }
 
-const BASE_LABELS: { base: number; label: string }[] = [
-  { base: 2, label: 'BIN (2)' },
-  { base: 8, label: 'OCT (8)' },
-  { base: 10, label: 'DEC (10)' },
-  { base: 16, label: 'HEX (16)' },
-];
-
-function CopyButton({ value }: { value: string }) {
+function CopyButton({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = React.useState(false);
   const handleCopy = React.useCallback(async () => {
     try {
@@ -36,112 +24,73 @@ function CopyButton({ value }: { value: string }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="copy-btn text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-      aria-label="Copy converted value"
+      disabled={!value}
+      className="copy-btn text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40"
+      aria-label={`Copy ${label}`}
     >
       {copied ? 'Copied!' : 'Copy'}
     </button>
   );
 }
 
+const PLACEHOLDERS: Record<string, string> = {
+  'number-to-words': 'e.g. 12345 or -3.5',
+  'words-to-number': 'e.g. twelve thousand three hundred forty-five',
+};
+
 export const Canvas: React.FC<CanvasProps> = ({ state, onChange }) => {
-  const conversions = React.useMemo(() => convertToAllBases(state), [state]);
-  const rows = [
-    ...BASE_LABELS.map(({ base, label }) => ({ base, label, conversion: conversions[base - 2] })),
-    ...Array.from({ length: 30 }, (_, i) => {
-      const base = i + 7;
-      if (base === 8 || base === 10 || base === 16) return null;
-      return { base, label: `Base ${base}`, conversion: conversions[base - 2] };
-    }).filter((r): r is { base: number; label: string; conversion: (typeof conversions)[number] } => r !== null),
-  ];
-
-  const inputValue = parseIntegerInBase(state.input, state.inputBase);
-  const twos = state.showTwosComplement ? twosComplementInfo(state) : null;
-
-  const update = (patch: Partial<ToolState>) => onChange({ ...state, ...patch });
+  const result = React.useMemo(() => convert(state), [state]);
+  const isWords = state.direction === 'words-to-number';
 
   return (
-    <div className="p-4 space-y-4 overflow-y-auto h-full" data-testid="base-converter-canvas">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+    <div className="p-6 space-y-6" data-testid="word-number-canvas">
+      <div>
         <label
-          htmlFor="base-input"
-          className="text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-300"
+          htmlFor="converter-input"
+          className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Input (base {state.inputBase})
+          {isWords ? 'Number words' : 'Number'}
         </label>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <input
-            id="base-input"
-            type="text"
-            value={state.input}
-            onChange={(e) => update({ input: e.target.value })}
-            placeholder={`Enter a base-${state.inputBase} number`}
-            className="w-full sm:w-72 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm text-gray-900 dark:text-gray-100"
-            aria-describedby="base-input-error"
-          />
-          <select
-            aria-label="Input base"
-            value={state.inputBase}
-            onChange={(e) => update({ inputBase: Number(e.target.value) })}
-            className="rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-sm text-gray-900 dark:text-gray-100"
-          >
-            {Array.from({ length: 35 }, (_, i) => i + 2).map((b) => (
-              <option key={b} value={b}>
-                Base {b}
-              </option>
-            ))}
-          </select>
+        <textarea
+          id="converter-input"
+          data-testid="converter-input"
+          value={state.input}
+          onChange={(e) => onChange({ ...state, input: e.target.value })}
+          placeholder={PLACEHOLDERS[state.direction]}
+          rows={2}
+          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 focus:border-emerald-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+        />
+      </div>
+
+      <div>
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {isWords ? 'Numeric value' : 'In words'}
+          </span>
+          {result.primary ? (
+            <CopyButton value={result.primary} label="result" />
+          ) : null}
         </div>
-      </div>
-
-      <div className="grid gap-2">
-        {rows.map((row) => {
-          const { base, label, conversion } = row;
-          if (!conversion) return null;
-          return (
-          <div
-            key={base}
-            className="flex items-center justify-between gap-3 rounded-md border border-gray-200 dark:border-gray-800 px-3 py-2"
-            data-testid={`base-row-${base}`}
-          >
-            <span className="w-20 shrink-0 text-xs font-medium text-gray-500 dark:text-gray-400">{label}</span>
-            {conversion.error ? (
-              <span role="alert" className="flex-1 text-xs text-red-600 dark:text-red-400">
-                {conversion.error}
-              </span>
-            ) : (
-              <code className="flex-1 break-all font-mono text-sm text-gray-900 dark:text-gray-100">
-                {conversion.formatted || '—'}
-              </code>
-            )}
-            {!conversion.error && conversion.formatted ? <CopyButton value={conversion.formatted} /> : null}
-          </div>
-          );
-        })}
-      </div>
-
-      {state.showTwosComplement && (
-        <div className="rounded-md border border-gray-200 dark:border-gray-800 px-3 py-2">
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-              Two's complement ({state.bitLength} bit)
+        <div
+          data-testid="conversion-result"
+          role="status"
+          className={`min-h-16 rounded-md border px-3 py-2 text-base break-words ${
+            result.error
+              ? 'border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300'
+              : 'border-gray-300 bg-gray-50 text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100'
+          }`}
+        >
+          {result.error ?? result.primary}
+        </div>
+        {result.secondary ? (
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <span className="font-mono text-sm text-gray-600 dark:text-gray-400" data-testid="secondary-result">
+              {result.secondary}
             </span>
-            {twos ? <CopyButton value={twos.replace(/ /g, '')} /> : null}
+            <CopyButton value={result.secondary} label="formatted value" />
           </div>
-          {twos ? (
-            <code className="mt-1 block break-all font-mono text-sm text-gray-900 dark:text-gray-100">{twos}</code>
-          ) : (
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Enter a valid integer (no fractional part) to see the two's complement representation.
-            </p>
-          )}
-          {inputValue !== null && (
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Minimum unsigned bit length for magnitude: {requiredBitLength(inputValue)}
-            </p>
-          )}
-        </div>
-      )}
+        ) : null}
+      </div>
     </div>
   );
 };
