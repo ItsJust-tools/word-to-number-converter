@@ -55,7 +55,9 @@ describe('integerToWords', () => {
 
 describe('numberToWordsText', () => {
   it('converts plain integers', () => {
-    expect(numberToWordsText('12345', 'lower').text).toBe('twelve thousand three hundred forty-five');
+    expect(numberToWordsText('12345', 'lower').text).toBe(
+      'twelve thousand three hundred forty-five'
+    );
   });
 
   it('converts negative numbers', () => {
@@ -92,7 +94,9 @@ describe('wordsToNumber', () => {
   it('parses compound phrases', () => {
     expect(wordsToNumber('twelve thousand three hundred forty-five').value).toBe(12345);
     expect(wordsToNumber('one hundred five').value).toBe(105);
-    expect(wordsToNumber('one million two hundred thirty-four thousand five hundred sixty-seven').value).toBe(1234567);
+    expect(
+      wordsToNumber('one million two hundred thirty-four thousand five hundred sixty-seven').value
+    ).toBe(1234567);
     expect(wordsToNumber('two billion five hundred million').value).toBe(2500000000);
     expect(wordsToNumber('one trillion').value).toBe(1_000_000_000_000);
   });
@@ -177,11 +181,15 @@ describe('currencyToWords', () => {
 
 describe('convert (state entry point)', () => {
   it('converts number-to-words by default', () => {
-    expect(convert(state({ input: '12345' })).primary).toBe('twelve thousand three hundred forty-five');
+    expect(convert(state({ input: '12345' })).primary).toBe(
+      'twelve thousand three hundred forty-five'
+    );
   });
 
   it('converts words-to-number and shows formatted secondary', () => {
-    const result = convert(state({ input: 'twelve thousand three hundred forty-five', direction: 'words-to-number' }));
+    const result = convert(
+      state({ input: 'twelve thousand three hundred forty-five', direction: 'words-to-number' })
+    );
     expect(result.primary).toBe('12345');
     expect(result.secondary).toBe('12,345');
   });
@@ -223,7 +231,13 @@ describe('tool definition', () => {
     const ok = wordNumberTool.deserialize({ input: 'x', direction: 'words-to-number' });
     expect(ok).toEqual({
       success: true,
-      data: { input: 'x', direction: 'words-to-number', format: 'lower', currencyMode: false, ordinalMode: false },
+      data: {
+        input: 'x',
+        direction: 'words-to-number',
+        format: 'lower',
+        currencyMode: false,
+        ordinalMode: false,
+      },
     });
     expect(wordNumberTool.deserialize('nope').success).toBe(false);
     expect(wordNumberTool.deserialize(null).success).toBe(false);

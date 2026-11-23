@@ -1,5 +1,8 @@
-export type WordsFormat = 'lower' | 'title' |
-  /* comma-separated scale groups */ 'commas';
+export type WordsFormat =
+  | 'lower'
+  | 'title'
+  /* comma-separated scale groups */
+  | 'commas';
 
 export type Direction = 'number-to-words' | 'words-to-number';
 

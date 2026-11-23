@@ -45,7 +45,13 @@ function under100Words(n: number, isOrdinal: boolean): string {
   const one = n % 10;
   if (one === 0) {
     const word = TENS[ten] ?? '';
-    return isOrdinal ? (word === 'six' ? 'sixth' : word.endsWith('y') ? word.slice(0, -1) + 'ieth' : word + 'th') : word;
+    return isOrdinal
+      ? word === 'six'
+        ? 'sixth'
+        : word.endsWith('y')
+          ? word.slice(0, -1) + 'ieth'
+          : word + 'th'
+      : word;
   }
   return `${tn(ten)}-${ordinalOfWord(on(one))}`;
 }
@@ -95,7 +101,9 @@ export function integerToOrdinal(value: number): string | null {
       const lastText = `${segmentWords(last.count, false)} ${ordinalOfWord(last.scaleName ?? '')}`;
       return head ? `${head} ${lastText}` : lastText;
     }
-    const head = parts.map((part) => `${segmentWords(part.count, false)} ${part.scaleName}`).join(' ');
+    const head = parts
+      .map((part) => `${segmentWords(part.count, false)} ${part.scaleName}`)
+      .join(' ');
     const tail = segmentWords(remainder, true);
     return head ? `${head} ${tail}` : tail;
   })();

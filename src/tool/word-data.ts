@@ -1,13 +1,39 @@
 /** Shared vocabulary tables for number word conversion (US short scale). */
 
 export const ONES = [
-  'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
-  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
-  'seventeen', 'eighteen', 'nineteen',
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
+  'thirteen',
+  'fourteen',
+  'fifteen',
+  'sixteen',
+  'seventeen',
+  'eighteen',
+  'nineteen',
 ];
 
 export const TENS = [
-  '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety',
+  '',
+  '',
+  'twenty',
+  'thirty',
+  'forty',
+  'fifty',
+  'sixty',
+  'seventy',
+  'eighty',
+  'ninety',
 ];
 
 export const SCALES = [
@@ -30,4 +56,10 @@ export const ORDINAL_IRREGULAR: Record<string, string> = {
 };
 
 /** Higher scale words get ordinal suffixes directly. */
-export const ORDINAL_SCALE_WORDS = ['hundred', 'thousand', 'million', 'billion', 'trillion'] as const;
+export const ORDINAL_SCALE_WORDS = [
+  'hundred',
+  'thousand',
+  'million',
+  'billion',
+  'trillion',
+] as const;

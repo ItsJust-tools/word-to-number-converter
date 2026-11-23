@@ -1,5 +1,12 @@
 import type { Tool, DeserializeResult } from '@itsjust/core';
-import { DEFAULT_STATE, MAX_SAFE_WORDS_INTEGER, type ConversionResult, type Direction, type ToolState, type WordsFormat } from './types';
+import {
+  DEFAULT_STATE,
+  MAX_SAFE_WORDS_INTEGER,
+  type ConversionResult,
+  type Direction,
+  type ToolState,
+  type WordsFormat,
+} from './types';
 import { numberToWordsText, type WordsFormat as NumberTextFormat } from './number-text';
 import { wordsToNumber } from './words-to-number';
 import { integerToOrdinal, numeralOrdinal } from './ordinals';

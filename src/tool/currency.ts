@@ -43,7 +43,9 @@ export function currencyToWords(amount: string, capitalize: boolean): CurrencyRe
   if (capitalize) {
     text = text
       .split(/([ -])/)
-      .map((part) => (part && /[a-z]/.test(part.charAt(0)) ? part.charAt(0).toUpperCase() + part.slice(1) : part))
+      .map((part) =>
+        part && /[a-z]/.test(part.charAt(0)) ? part.charAt(0).toUpperCase() + part.slice(1) : part
+      )
       .join('');
   }
   return { text, error: null };

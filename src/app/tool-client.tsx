@@ -11,13 +11,7 @@ import {
 } from 'react';
 import { ToolShell, useTool, ImportExport } from '@itsjust/core';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
-import {
-  toolConfig,
-  templateBaseVersion,
-  ToolCanvas,
-  ToolToolbar,
-  ToolSidebar,
-} from '@/tool';
+import { toolConfig, templateBaseVersion, ToolCanvas, ToolToolbar, ToolSidebar } from '@/tool';
 import { wordNumberTool as toolDefinition } from '@/tool/tool-definition';
 import type { ToolState } from '@/tool/types';
 import { DEFAULT_STATE } from '@/tool/types';

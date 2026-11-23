@@ -4,14 +4,29 @@
  */
 
 const ONES = [
-  'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
-  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
-  'seventeen', 'eighteen', 'nineteen',
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
+  'thirteen',
+  'fourteen',
+  'fifteen',
+  'sixteen',
+  'seventeen',
+  'eighteen',
+  'nineteen',
 ];
 
-const TENS = [
-  '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety',
-];
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
 
 const SCALES: { value: number; name: string }[] = [
   { value: 1_000_000_000_000, name: 'trillion' },
@@ -23,7 +38,7 @@ const SCALES: { value: number; name: string }[] = [
 
 /** Words for 0-99 (no "and"). */
 function wordsUnder100(n: number): string {
-  if (n < 20) return ONES[n] ?? '';  // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+  if (n < 20) return ONES[n] ?? ''; // eslint-disable-line @typescript-eslint/no-unnecessary-condition
   const ten = Math.floor(n / 10);
   const one = n % 10;
   return one === 0 ? (TENS[ten] ?? '') : `${TENS[ten] ?? ''}-${ONES[one] ?? ''}`;
@@ -69,7 +84,9 @@ function capitalizeWords(text: string, format: 'lower' | 'title' | 'commas'): st
   if (format === 'title') {
     return text
       .split(/([ -])/)
-      .map((part) => (part && /[a-z]/.test(part.charAt(0)) ? part.charAt(0).toUpperCase() + part.slice(1) : part))
+      .map((part) =>
+        part && /[a-z]/.test(part.charAt(0)) ? part.charAt(0).toUpperCase() + part.slice(1) : part
+      )
       .join('');
   }
   return text;

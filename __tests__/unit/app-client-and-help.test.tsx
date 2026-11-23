@@ -38,7 +38,14 @@ vi.mock('@itsjust/core', () => ({
   ),
   useTool: () => ({
     state: {
-      data: { input: 'Hello', inputBase: 10, digitCase: 'lower', grouping: 'none', showTwosComplement: true, bitLength: 32 },
+      data: {
+        input: 'Hello',
+        inputBase: 10,
+        digitCase: 'lower',
+        grouping: 'none',
+        showTwosComplement: true,
+        bitLength: 32,
+      },
       setData: mockSetData,
       isDirty: false,
       lastSaved: 'just now',

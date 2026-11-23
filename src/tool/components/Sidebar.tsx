@@ -71,9 +71,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ state, onChange }) => {
         <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-400">
           Numbers convert with US short-scale naming up to trillions. Words-to-number accepts
           hyphenated words, optional &quot;and&quot;, and &quot;negative&quot;/&quot;minus&quot;
-          signs. Currency mode writes amounts check-style with cents as a fraction of 100.
-          Ordinal mode outputs words like &quot;twenty-first&quot; and the numeral form
-          &quot;21st&quot;.
+          signs. Currency mode writes amounts check-style with cents as a fraction of 100. Ordinal
+          mode outputs words like &quot;twenty-first&quot; and the numeral form &quot;21st&quot;.
         </p>
       </div>
     </div>

@@ -11,7 +11,13 @@ interface ToolSidebarProps {
   onFontSizeChange?: (delta: number) => void;
 }
 
-export function ToolSidebar({ state, onStateChange, text, fontSize, onFontSizeChange }: ToolSidebarProps) {
+export function ToolSidebar({
+  state,
+  onStateChange,
+  text,
+  fontSize,
+  onFontSizeChange,
+}: ToolSidebarProps) {
   const digits = (text ?? '').replace(/\s/g, '').length;
 
   return (

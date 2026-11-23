@@ -118,9 +118,16 @@ describe('app and seo', () => {
       })
     ).toEqual({
       success: true,
-      data: { input: '11', direction: 'number-to-words', format: 'title', currencyMode: true, ordinalMode: true },
+      data: {
+        input: '11',
+        direction: 'number-to-words',
+        format: 'title',
+        currencyMode: true,
+        ordinalMode: true,
+      },
     });
-    const exporters = (wordNumberTool as { exporters?: Array<{ loader: ExporterLoader }> }).exporters ?? [];
+    const exporters =
+      (wordNumberTool as { exporters?: Array<{ loader: ExporterLoader }> }).exporters ?? [];
     expect(exporters).toHaveLength(4);
     const first = exporters[0];
     expect(first).toBeDefined();
@@ -141,7 +148,9 @@ describe('app and seo', () => {
 
     expect(screen.getByRole('link', { name: 'Open help page' })).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument(); // digit count for "ff"
-    expect(screen.getByRole('application', { name: 'Word to number converter canvas' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('application', { name: 'Word to number converter canvas' })
+    ).toBeInTheDocument();
     expect(screen.getByTestId('conversion-result')).toHaveTextContent('two hundred fifty-five');
   });
 });

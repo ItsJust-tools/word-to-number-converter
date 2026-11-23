@@ -67,9 +67,7 @@ export const Canvas: React.FC<CanvasProps> = ({ state, onChange }) => {
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
             {isWords ? 'Numeric value' : 'In words'}
           </span>
-          {result.primary ? (
-            <CopyButton value={result.primary} label="result" />
-          ) : null}
+          {result.primary ? <CopyButton value={result.primary} label="result" /> : null}
         </div>
         <div
           data-testid="conversion-result"
@@ -84,7 +82,10 @@ export const Canvas: React.FC<CanvasProps> = ({ state, onChange }) => {
         </div>
         {result.secondary ? (
           <div className="mt-2 flex items-center justify-between gap-2">
-            <span className="font-mono text-sm text-gray-600 dark:text-gray-400" data-testid="secondary-result">
+            <span
+              className="font-mono text-sm text-gray-600 dark:text-gray-400"
+              data-testid="secondary-result"
+            >
               {result.secondary}
             </span>
             <CopyButton value={result.secondary} label="formatted value" />
